@@ -7,6 +7,15 @@ import uvicorn
 # 1. FastAPI 앱 생성
 app = FastAPI(title="세관 서류 자동 검토 API")
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+  CORSMiddleware,
+  allow_origins=["http://localhost:5173"],  # 혹은 ["*"]
+  allow_methods=["*"],
+  allow_headers=["*"],
+)
+
 # 2. 앱 시작 시 AI 모델, DB, 규칙 시트 로드 (한번만 실행됨)
 try:
     vectordb, llm = processing.load_ai_resources()
@@ -18,7 +27,7 @@ except Exception as e:
 
 # 3. API 엔드포인트(Endpoint) 정의
 #    프론트엔드 개발자가 접속할 '주소'를 만들어주는 부분입니다.
-@app.post("/validate-document/", summary="문서 이미지 검증 및 리포트 생성")
+@app.post("/api/customs_review", summary="문서 이미지 검증 및 리포트 생성")
 async def validate_document_api(file: UploadFile = File(...)):
     """
     수입신고서 이미지 파일을 받아 OCR, 유효성 검증, 지능형 리포팅을 수행합니다.
