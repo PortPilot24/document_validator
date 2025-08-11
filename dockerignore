@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+*.swp
+.venv/
+venv/
+.git/
+.gitignore
+customs_rules_db/        # 런타임 볼륨으로 마운트 권장
+.env
+.DS_Store
