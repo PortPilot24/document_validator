@@ -63,7 +63,20 @@ uvicorn main:app --reload
 서버가 성공적으로 실행되면 터미널에 `Uvicorn running on http://127.0.0.1:8000` 메시지가 나타납니다.
 
 ### 6. API 테스트
-웹 브라우저를 열고 **`http://127.0.0.1:8000/docs`** 로 접속하면, 자동으로 생성된 API 문서를 통해 직접 파일을 업로드하고 기능을 테스트해볼 수 있습니다.
+
+#### 로컬 개발 환경
+서버 실행 후 웹 브라우저에서 다음 주소로 접속합니다.
+
+- API 문서: **`http://127.0.0.1:8000/docs`**
+- 파일 업로드: **POST** `http://127.0.0.1:8000/customs_review`
+- 헬스 체크: **GET** `http://127.0.0.1:8000/health`
+
+#### 통합 환경(Nginx 뒤)
+통합 플랫폼(Nginx 라우팅)에서는 서비스별 프리픽스를 사용합니다.
+
+- API 문서: **`https://<게이트웨이 주소>/document-validator/docs`**
+- 파일 업로드: **POST** `https://<게이트웨이 주소>/document-validator/customs_review`
+- 헬스 체크: **GET** `https://<게이트웨이 주소>/document-validator/health`
 
 ## 📁 프로젝트 구조
 

@@ -1,17 +1,18 @@
-# main.py
-
+# main.py (상단)
 from fastapi import FastAPI, File, UploadFile, HTTPException
-import processing # 우리가 만든 로직 파일(processing.py)을 불러옵니다.
+import processing
 import uvicorn
-
-# 1. FastAPI 앱 생성
-app = FastAPI(title="세관 서류 자동 검토 API")
-
 from fastapi.middleware.cors import CORSMiddleware
+
+# 프리픽스 환경에서 문서/경로 생성이 예쁘게 되게 하려면 root_path 지정(선택 권장)
+app = FastAPI(
+    title="세관 서류 자동 검토 API",
+    root_path="/document-validator"   # Nginx 뒤에서 동작할 때 문서/링크가 올바르게 생성됨
+)
 
 app.add_middleware(
   CORSMiddleware,
-  allow_origins=["*"],  # 혹은 ["http://localhost:5173"]
+  allow_origins=["*"],
   allow_methods=["*"],
   allow_headers=["*"],
 )
@@ -27,7 +28,7 @@ except Exception as e:
 
 # 3. API 엔드포인트(Endpoint) 정의
 #    프론트엔드 개발자가 접속할 '주소'를 만들어주는 부분입니다.
-@app.post("/api/customs_review", summary="문서 이미지 검증 및 리포트 생성")
+@app.post("/customs_review", summary="문서 이미지 검증 및 리포트 생성")
 async def validate_document_api(file: UploadFile = File(...)):
     """
     수입신고서 이미지 파일을 받아 OCR, 유효성 검증, 지능형 리포팅을 수행합니다.
@@ -72,7 +73,7 @@ async def validate_document_api(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"서버 내부 오류: {e}")
 
-@app.get("/api/health")
+@app.get("/health")
 def health():
     return {"ok": True}
 
