@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app.add_middleware(
   CORSMiddleware,
-  allow_origins=["http://localhost:5173"],  # 혹은 ["*"]
+  allow_origins=["*"],  # 혹은 ["http://localhost:5173"]
   allow_methods=["*"],
   allow_headers=["*"],
 )
@@ -71,6 +71,10 @@ async def validate_document_api(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail=f"데이터 처리 오류: {e}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"서버 내부 오류: {e}")
+
+@app.get("/api/health")
+def health():
+    return {"ok": True}
 
 # 5. (선택) 서버 직접 실행을 위한 코드
 if __name__ == "__main__":
