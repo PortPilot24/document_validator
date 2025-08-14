@@ -4,6 +4,7 @@ import pandas as pd
 import json
 import re
 import base64
+import os
 from datetime import datetime
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
@@ -12,11 +13,23 @@ from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings
 from langchain_core.messages import HumanMessage
 
+# api키 설정
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+if not OPENAI_API_KEY:
+    raise RuntimeError("OPENAI_API_KEY 환경변수가 설정되지 않았습니다.")
+
+print(f"✅ API Key 로드 완료: {OPENAI_API_KEY[:8]}...")  # 앞 몇 글자만 출력
+
 # --- 1. 리소스 로드 함수 ---
 # (앱 시작 시 한번만 로드되도록 main.py에서 호출할 예정)
 def load_ai_resources():
     embeddings_model = OpenAIEmbeddings()
-    vectordb = Chroma(persist_directory='./customs_rules_db', embedding_function=embeddings_model)
+
+    persist_dir = os.getenv("CHROMA_DIR", "/home/site/chromadb")
+    os.makedirs(persist_dir, exist_ok=True)  # 폴더 없으면 생성
+
+    vectordb = Chroma(persist_directory=persist_dir, 
+                      embedding_function=embeddings_model)
     llm = ChatOpenAI(model_name="gpt-4o", temperature=0, max_tokens=2048)
     return vectordb, llm
 
